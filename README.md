@@ -7,7 +7,7 @@ This happens on linux, not on mac.
 ## Running the Reproduction
 
 ```bash
-./run_reproduction`.sh
+./run_reproduction.sh
 ```
 
 ## Expected Result
