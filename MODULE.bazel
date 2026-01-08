@@ -1,0 +1,1 @@
+module(name = "minimal_bazel_repro")
