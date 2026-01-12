@@ -15,4 +15,4 @@ bazel coverage //:minimal_test \
   --strategy=CoverageReport=local \
   --test_output=all \
   --experimental_split_coverage_postprocessing \
-  --experimental_fetch_all_coverage_outputs \
+  --experimental_fetch_all_coverage_outputs 
