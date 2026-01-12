@@ -1,14 +1,23 @@
 #!/bin/bash
 set -e
 
-# Use provided bazel path, or default to bazelisk
-if [ -n "$1" ]; then
+# Logic to determine which Bazel binary to use:
+# 1. If $1 is a directory, treat it as Bazel source, build it, and use it.
+# 2. If $1 is a file, use it as the Bazel binary.
+# 3. Fallback to bazelisk.
+
+if [ -d "$1" ]; then
+  BAZEL_DIR="$1"
+  echo "--- Building custom Bazel from source in $BAZEL_DIR ---"
+  (cd "$BAZEL_DIR" && bazel build //src:bazel)
+  BAZEL_BIN="$(cd "$BAZEL_DIR" && pwd)/bazel-bin/src/bazel"
+elif [ -f "$1" ]; then
   BAZEL_BIN="$1"
 else
   BAZEL_BIN="bazelisk"
 fi
 
-echo "Using Bazel at: $(which $BAZEL_BIN || echo $BAZEL_BIN)"
+echo "Using Bazel at: $BAZEL_BIN"
 $BAZEL_BIN version | grep "Build label" || true
 
 mkdir -p /tmp/bazel-repro
