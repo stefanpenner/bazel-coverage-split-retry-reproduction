@@ -1,29 +1,35 @@
 #!/bin/bash
+source ./common.sh
 
 # Cleanup any previous runs
 rm -f /tmp/bazel_minimal_repro_marker
 
-echo "Running Bazel coverage..."
-echo "Flags:"
-echo "  --flaky_test_attempts=2 (Triggers retry)"
-echo "  --experimental_split_coverage_postprocessing (Moves merging to separate Java action)"
-echo "  --experimental_fetch_all_coverage_outputs (Required for split coverage)"
-echo "  --strategy=CoverageReport=local (Ensures merger runs locally)"
+echo "================================================================================"
+echo "STEP 1: Sanity Check (Basic Bazel Test)"
+echo "Checking if Bazel can run a simple test in this environment..."
+echo "================================================================================"
 
-# The flags that trigger the bug:
-# 1. --flaky_test_attempts=2: Triggers the retry
-# 2. --experimental_split_coverage_postprocessing: Moves merging to a separate Java action
-# 3. --experimental_fetch_all_coverage_outputs: Required for split coverage
-# 4. --strategy=CoverageReport=local: Ensures the merger runs on your machine
+# Pre-seed the marker so the test succeeds on its first attempt
+touch /tmp/bazel_minimal_repro_marker
+
+if run_bazel test //:minimal_test --test_output=errors; then
+  echo "SUCCESS: Sanity check passed!"
+else
+  echo "FAILURE: Sanity check failed. There is an issue with the environment."
+  exit 1
+fi
+
+# Cleanup for the real reproduction
+rm -f /tmp/bazel_minimal_repro_marker
+
+echo ""
+echo "================================================================================"
+echo "STEP 2: Running Reproduction (Bazel Coverage with Retry)"
+echo "Flags: ${REPRO_FLAGS[@]}"
+echo "================================================================================"
+
 set +e
-bazel coverage //:minimal_test \
-  --cache_test_results=no \
-  --flaky_test_attempts=2 \
-  --strategy=CoverageReport=local \
-  --test_output=all \
-  --experimental_split_coverage_postprocessing \
-  --experimental_fetch_all_coverage_outputs
-
+run_bazel coverage //:minimal_test "${REPRO_FLAGS[@]}"
 EXIT_CODE=$?
 set -e
 
@@ -39,8 +45,7 @@ else
   echo ""
   echo "================================================================================"
   echo "BAZEL SUCCEEDED UNEXPECTEDLY"
-  echo "The reproduction did not trigger the failure. This might mean the issue is fixed"
-  echo "or the environment is different."
+  echo "The reproduction did not trigger the failure."
   echo "================================================================================"
   exit 0
 fi
