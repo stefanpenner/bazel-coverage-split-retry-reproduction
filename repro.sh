@@ -6,9 +6,11 @@ rm -f /tmp/bazel_minimal_repro_marker
 
 echo "Running reproduction..."
 
-# Run coverage with retry and split post-processing
-# We expect this to fail.
+# We use a clean build and disable the disk cache to ensure 
+# the reproduction is not affected by previous runs.
+bazel clean
 bazel coverage //:minimal_test \
+  --disk_cache= \
   --cache_test_results=no \
   --flaky_test_attempts=2 \
   --strategy=CoverageReport=local \
