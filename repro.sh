@@ -1,11 +1,21 @@
 #!/bin/bash
 set -e
 
+# Use provided bazel path, or default to bazelisk
+if [ -n "$1" ]; then
+  BAZEL_BIN="$1"
+else
+  BAZEL_BIN="bazelisk"
+fi
+
+echo "Using Bazel at: $(which $BAZEL_BIN || echo $BAZEL_BIN)"
+$BAZEL_BIN version | grep "Build label" || true
+
 mkdir -p /tmp/bazel-repro
 rm -f /tmp/bazel-repro/marker
 
-bazel clean
-bazel coverage //:minimal_test \
+$BAZEL_BIN clean
+$BAZEL_BIN coverage //:minimal_test \
   --cache_test_results=no \
   --flaky_test_attempts=2 \
   --test_output=all \
