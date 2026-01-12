@@ -20,9 +20,13 @@ jobs:
       - name: Setup Bazel
         uses: bazel-contrib/setup-bazel@0.18.0
         with:
-          bazelisk-cache: true
-          disk-cache: ${{ github.workflow }}
-          repository-cache: true
+          bazelisk-cache: false
+          repository-cache: false
+      
+      - name: Check environment
+        run: |
+          uname -a
+          bazel version
       
       - name: Run reproduction
         run: ./repro.sh

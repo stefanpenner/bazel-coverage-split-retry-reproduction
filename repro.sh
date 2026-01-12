@@ -29,6 +29,8 @@ $BAZEL_BIN coverage //:minimal_test \
   --flaky_test_attempts=2 \
   --test_output=all \
   --spawn_strategy=sandboxed \
+  --remote_cache= \
+  --disk_cache= \
   --verbose_failures \
   --sandbox_debug \
   --strategy=CoverageReport=local \

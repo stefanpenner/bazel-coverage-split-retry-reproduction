@@ -9,8 +9,10 @@ if [ -f "$MARKER" ]; then
 else
   touch "$MARKER"
   echo "Attempt 1: Failing with coverage"
+  echo "COVERAGE_DIR: $COVERAGE_DIR"
   mkdir -p "$COVERAGE_DIR"
   touch "$COVERAGE_DIR/file1.dat"
+  ls -la "$COVERAGE_DIR"
   EXIT_CODE=1
 fi
 
