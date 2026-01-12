@@ -24,4 +24,4 @@ jobs:
           repository-cache: true
       
       - name: Run reproduction
-        run: ./run_reproduction.sh
+        run: ./repro.sh

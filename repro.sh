@@ -1,10 +1,13 @@
 #!/bin/bash
+set -e
 
 # Clear flakiness marker
 rm -f /tmp/bazel_minimal_repro_marker
 
+echo "Running reproduction..."
+
 # Run coverage with retry and split post-processing
-# This command is expected to fail with a FileNotFoundException in the coverage merger
+# We expect this to fail.
 bazel coverage //:minimal_test \
   --cache_test_results=no \
   --flaky_test_attempts=2 \
