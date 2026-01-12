@@ -1,5 +1,5 @@
 #!/bin/bash
-MARKER="/tmp/bazel_minimal_repro_marker"
+MARKER="/tmp/bazel_repro/marker"
 
 echo "COVERAGE_DIR: $COVERAGE_DIR"
 echo "COVERAGE_OUTPUT_FILE: $COVERAGE_OUTPUT_FILE"
